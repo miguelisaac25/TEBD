@@ -1,0 +1,5 @@
+com\sistema\App.class
+com\sistema\ListaReceitas.class
+com\sistema\ExportaHandler.class
+com\sistema\Receita.class
+com\sistema\ImportaHandler.class
