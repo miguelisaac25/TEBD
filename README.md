@@ -1,5 +1,63 @@
-. 🖥️ Preparação do XAMPPInicie o XAMPP: Abra o Painel de Controle do XAMPP.Inicie os Módulos: Clique em Start ao lado de:Apache (servidor web)MySQL (servidor de banco de dados)2. 🗄️ Criação do Banco de DadosVocê precisa criar o banco de dados chamado receitas_db conforme o README1.Acesse o phpMyAdmin: No Painel de Controle do XAMPP, clique no botão Admin ao lado do módulo MySQL. Isso abrirá o phpMyAdmin no seu navegador.Execute o SQL: Clique na aba SQL e execute o seguinte comando para criar o banco:SQLCREATE DATABASE receitas_db
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-Configurar o Django: Verifique se o seu arquivo settings.py do projeto Django está configurado para conectar a este banco (geralmente USER: 'root' e PASSWORD: '' se você não definiu senha no XAMPP)2.3. 🐍 Configuração e Migração do Projeto DjangoExecute estes comandos no terminal, dentro da pasta do seu projeto Django, assumindo que você já ativou o ambiente virtual (venv):AçãoComandoPropósitoInstalar Dependênciaspip install -r requirements.txt 3Instala bibliotecas Python necessárias.Criar Migraçõespython manage.py makemigrations receitas 4Prepara o esquema do banco de dados.Aplicar Migraçõespython manage.py migrate 5Cria as tabelas receitas no receitas_db.Popular o Bancopython manage.py seed_receitas 6Adiciona dados de exemplo para exportarmos.4. 📤 Gerar o XML VálidoAgora você pode iniciar o servidor Django e usar a função de exportação para obter o arquivo XML no formato estruturado (o "tipo padrão").Executar o Servidor Django:Bashpython manage.py runserver
-Acessar e Exportar:Abra http://127.0.0.1:8000/ no navegador7.Navegue até a funcionalidade de Exportação de XML.Selecione a opção XML Estruturado (<receitas><receita>...)8.O navegador fará o download do arquivo XML.
+# 📄 Projeto: Validação e Comunicação XML (Java/Javalin)
+
+Este projeto é um endpoint de serviço web simples que demonstra a comunicação e a segurança de dados ao trocar informações no formato **XML**, usando um **contrato XSD** para garantir a validade dos dados.
+
+## 🎯 Conceitos-Chave Demonstrados
+
+* [cite_start]**XML (eXtensible Markup Language):** Formato padrão para estruturação e troca de dados semiestruturados[cite: 20, 21].
+* [cite_start]**Esquema XML (XSD):** Atua como o **contrato de dados**[cite: 100, 102]. [cite_start]É o mecanismo moderno para **validar** a estrutura e o tipo de conteúdo do XML[cite: 109, 114].
+* **POO (Mapeamento de Objetos):** Uso do **JAXB** (Java Architecture for XML Binding) para:
+    * **Marshalling:** Converter objetos Java (`Receita`) para XML (Exportação).
+    * **Unmarshalling:** Converter XML válido para objetos Java (Importação).
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+| Componente | Função |
+| :--- | :--- |
+| **Linguagem** | Java 17 |
+| **Framework Web** | Javalin (Micro-framework leve) |
+| **Visualização** | Freemarker (.ftl) + Tailwind CSS |
+| **XML/POO** | JAXB (Para Mapeamento Objeto ↔ XML) |
+| **Contrato** | Esquema XML (`receitas.xsd`) |
+| **Gerenciador** | Maven (`pom.xml`) |
+
+---
+
+## ⚙️ Funcionalidades do Sistema
+
+O sistema é acessado via `http://localhost:7000/` e possui duas funções:
+
+### 1. 📤 Exportar XML (Java → XML)
+
+Recebe dados do formulário e converte o **Objeto Java** em um documento XML formatado, pronto para download.
+
+### 2. ✅ Importar e Validar XML (XML → XSD → Java)
+
+Permite o upload de um arquivo XML e executa o processo de **validação obrigatória**:
+
+1.  O sistema verifica o XML de entrada contra o **contrato `receitas.xsd`**.
+2.  Se a validação **falhar** (ex: falta a tag `<titulo>`), o XML é **rejeitado**, provando que o XSD protege a integridade do sistema.
+3.  Se a validação for **bem-sucedida**, o JAXB converte o XML em **Objetos `Receita`** em Java.
+
+---
+
+## 🚀 Cenários de Teste (Para Demonstração)
+
+| Teste | Ação | Conceito Comprovado |
+| :--- | :--- | :--- |
+| **Sucesso** | Gere um XML usando o formulário e, em seguida, use o botão **Importar** com o mesmo arquivo. | Marshalling, Unmarshalling e Validação bem-sucedida. |
+| **Falha** | Abra o XML exportado, **remova a tag `<titulo>`** e tente importar o arquivo modificado. | O **XSD (Contrato)** está protegendo o sistema ao rejeitar dados com estrutura inválida. |
+
+---
+
+## 🏃 Como Executar
+
+1.  **Requisitos:** Java 17 e Maven.
+2.  **Compilação:** Abra o terminal na pasta raiz do projeto e execute:
+    ```bash
+    mvn clean install
+    ```
+3.  **Execução:** Rode o método `main` na classe `App.java`.
+4.  **Acesso:** Abra seu navegador em: `http://localhost:7000`
